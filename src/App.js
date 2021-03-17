@@ -38,12 +38,32 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
-      box: {},
+      boxAll: [],
       route: 'signin',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined
+      }
+    })
+  }
+
+  
   onInputChange= (event)=> {
   this.setState({input: event.target.value});
   }
@@ -61,25 +81,37 @@ class App extends Component {
 
   calculateFaceLocation =(data) => {
 
-    const face = data.outputs[0].data.regions[0].region_info.bounding_box;
+    //const face = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const clarifaiFaceAll = data.outputs[0].data.regions;
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
     //console.log("breedte =" + width , 'lengte =' + height);
+    const boxArr = clarifaiFaceAll.map(region => {
+      return ( 
+        {
+      leftCol :  region.region_info.bounding_box.left_col * width,
+      topRow :  region.region_info.bounding_box.top_row * height,
+      rightCol : width - (region.region_info.bounding_box.right_col * width),
+      bottomRow : height - (region.region_info.bounding_box.bottom_row * height)
+    })
    
-      return { 
-         topRow: face.top_row * height,
-         leftCol: face.left_col * width,
-         rightCol: width -(face.right_col * width),
-         bottomRow: height - (face.bottom_row * height)
-       }
-    
+      //return { 
+       //  topRow: face.top_row * height,
+      //   leftCol: face.left_col * width,
+       //  rightCol: width -(face.right_col * width),
+     //    bottomRow: height - (face.bottom_row * height)
+     //  }   
+});
+return boxArr;
 }
+ // displayFaceBox = (box) => {this.setState({box: box})};
+ displayFaceBox = (boxAll) => {
+   this.setState({boxAll: boxAll});
+ }
 
-  displayFaceBox = (box) => {this.setState({box: box})};
 
-
-    onButtonSubmit = () => {
+    onPictureSubmit = () => {
        //console.log('click');
       this.setState({imageUrl: this.state.input})
       app.models
@@ -91,16 +123,32 @@ class App extends Component {
           this.state.imageUrl
         );
       })
-      .then(response =>
-        this.displayFaceBox(this.calculateFaceLocation(response)))
-        .catch(error => console.log(error));
+      .then(response => {
+        if (response) {
+          fetch('http://localhost:3005/image', {
+            method: 'put',
+            headers: {'Content-Type' : 'application/json'},
+            body: JSON.stringify({
+              id:this.state.user.id
+              
+            })
+          })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, {entries: count}))
+          })
+        
        
-     };    
+        this.displayFaceBox(this.calculateFaceLocation(response))
+        .catch(error => console.log(error));
+        }
+     }); 
+    }  
   
 
 
   render() {
-    const { isSignedIn, imageUrl, route, box } = this.state ;
+    const { isSignedIn, imageUrl, route, boxAll } = this.state ;
   return (
     <div className="App">
        <Particles className="particles" 
@@ -110,16 +158,16 @@ class App extends Component {
       { route === 'home' ? 
            <div>
               <Logo />
-              <Rank />
+              <Rank name={this.state.user.name} entries={this.state.user.entries} />
              <ImageLinkForm 
                  onInputChange={this.onInputChange} 
-                 onButtonSubmit={this.onButtonSubmit}/>
-              <FaceRecognition box={box} imageUrl={imageUrl}/>
+                 onPictureSubmit={this.onPictureSubmit}/>
+              <FaceRecognition boxAll={boxAll} imageUrl={imageUrl}/>
               </div>
             : (
               route === 'signin' 
-              ? <Signin onRouteChange={this.onRouteChange}/>
-              : <Register onRouteChange={this.onRouteChange} />
+              ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
+              : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
             )
           }
          </div>
