@@ -35,7 +35,7 @@ class Register extends React.Component {
         })
         .then(response => response.json())
         .then(user => {
-          if (user) {
+          if (user.id) {
               this.props.loadUser(user);
               this.props.onRouteChange('home');
             }
@@ -58,6 +58,7 @@ class Register extends React.Component {
                             type="text" 
                             name="name" 
                             id="name"
+                    
                             onChange={this.onNameChange} />
                         </div>
                         <div className="mt3">
@@ -66,6 +67,7 @@ class Register extends React.Component {
                             type="email" 
                             name="email-address" 
                             id="email-address" 
+                           
                             onChange={this.onEmailChange}/>
                         </div>
                         <div className="mv3">
@@ -74,6 +76,7 @@ class Register extends React.Component {
                              type="password"
                               name="password" 
                               id="password"
+                              
                               onChange={this.onPasswordChange} />
                         </div>
                         
