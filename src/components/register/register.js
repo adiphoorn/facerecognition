@@ -27,6 +27,7 @@ class Register extends React.Component {
         fetch('https://git.heroku.com/gentle-oasis-04342.git/register',{
             mode: "cors",
             method: 'post',
+            credentials: "include",
             headers: ({'Content-Type': 'application/json'},
                 { 'Access-Control-Allow-Origin' : 'https://git.heroku.com/gentle-oasis-04342.git/register' }),
             body: JSON.stringify({
