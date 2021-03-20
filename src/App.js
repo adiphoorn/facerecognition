@@ -111,7 +111,7 @@ return boxArr;
     onPictureSubmit = () => {
        //console.log('click');
       this.setState({imageUrl: this.state.input})
-      fetch('http://localhost:3005/imageurl', {
+      fetch('https://git.heroku.com/gentle-oasis-04342.git/imageurl', {
               method: 'post',
               headers: {'Content-Type' : 'application/json'},
               body: JSON.stringify({
@@ -122,7 +122,7 @@ return boxArr;
       
       .then(response => {
         if (response) {
-          fetch('http://localhost:3005/image', {
+          fetch('https://git.heroku.com/gentle-oasis-04342.git/image', {
             method: 'put',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
