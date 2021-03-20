@@ -25,7 +25,7 @@ class Register extends React.Component {
     }
     onSubmitSignIn = ()=> {
         fetch('https://git.heroku.com/gentle-oasis-04342.git/register',{
-            crossDomain:true,
+           
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

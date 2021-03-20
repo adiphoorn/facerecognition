@@ -8,7 +8,7 @@ import FaceRecognition from'./components/faceRecognition/faceRecognition';
 import Signin from './components/signIn/signIn';
 import Register from './components/register/register';
 import './App.css';
-import 'tachyons';
+//import 'tachyons';
 
 
 const particleOptions = {
