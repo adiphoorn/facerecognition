@@ -111,7 +111,7 @@ return boxArr;
     onPictureSubmit = () => {
        //console.log('click');
       this.setState({imageUrl: this.state.input})
-      fetch('https://git.heroku.com/gentle-oasis-04342.git/imageurl', {
+      fetch('https://enigmatic-shore-74813.herokuapp.com/imageurl', {
               method: 'post',
               headers: {'Content-Type' : 'application/json'},
               body: JSON.stringify({
@@ -122,7 +122,7 @@ return boxArr;
       
       .then(response => {
         if (response) {
-          fetch('https://git.heroku.com/gentle-oasis-04342.git/image', {
+          fetch('https://enigmatic-shore-74813.herokuapp.com/image', {
             method: 'put',
             headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
